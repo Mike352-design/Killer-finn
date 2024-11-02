@@ -17,7 +17,7 @@ const alive = async (m, Matrix) => {
   if (['alive', 'uptime', 'runtime'].includes(cmd)) {
     const width = 800;
     const height = 500;
-    const image = new Jimp(width, height, 'black');
+    const image = new Jimp(width, height, 'pink');
     const font = await Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
     const textMetrics = Jimp.measureText(font, timeString);
     const textHeight = Jimp.measureTextHeight(font, timeString, width);
@@ -40,8 +40,8 @@ _________________________________________
       {
         "name": "quick_reply",
         "buttonParamsJson": JSON.stringify({
-          display_text: "MENU",
-          id: `${prefix}menu`
+          display_text: "OWNER",
+          id: `${prefix}owner`
         })
       },
       {
