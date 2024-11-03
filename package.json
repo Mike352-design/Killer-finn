@@ -1,16 +1,16 @@
 {
-  "name": "Queen Gracie-MD",
+  "name": "KHAN-MD",
   "version": "10.8.1",
-  "description": "Queen Gracie-MD latest multi device whatsapp bot",
+  "description": "KHAN-MD latest multi device whatsapp bot",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "pm2 start index.js --deep-monitoring --attach --name KHAN-MD",
-    "stop": "pm2 stop Gracie",
-    "restart": "pm2 restart Gracie"
+    "stop": "pm2 stop KHAN-MD",
+    "restart": "pm2 restart KHAN-MD"
   },
-  "keywords": ["QUEEN GRACIE", "whatsapp-bot", "whatsapp md bot"],
-  "author": "Alvin",
+  "keywords": ["khan-md", "whatsapp-bot", "whatsapp md bot"],
+  "author": "JawadTechX",
   "license": "ISC",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
