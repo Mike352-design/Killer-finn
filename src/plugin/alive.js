@@ -1,101 +1,94 @@
-import config from '../../config.cjs';
-import pkg, { prepareWAMessageMedia } from '@whiskeysockets/baileys';
-import Jimp from 'jimp';
-const { generateWAMessageFromContent, proto } = pkg;
+const { zokou } = require('../framework/zokou');
+const {addOrUpdateDataInAlive , getDataFromAlive} = require('../bdd/alive')
+const moment = require("moment-timezone");
+const s = require(__dirname + "/../set");
 
-const alive = async (m, Matrix) => {
-  const uptimeSeconds = process.uptime();
-  const days = Math.floor(uptimeSeconds / (3600 * 24));
-  const hours = Math.floor((uptimeSeconds % (3600 * 24)) / 3600);
-  const minutes = Math.floor((uptimeSeconds % 3600) / 60);
-  const seconds = Math.floor(uptimeSeconds % 60);
-  const timeString = `${String(days).padStart(2, '0')}-${String(hours).padStart(2, '0')}-${String(minutes).padStart(2, '0')}-${String(seconds).padStart(2, '0')}`;
-  const prefix = config.PREFIX;
-  const cmd = m.body.startsWith(prefix) ? m.body.slice(prefix.length).split(' ')[0].toLowerCase() : '';
-  const text = m.body.slice(prefix.length + cmd.length).trim();
+zokou(
+    {
+        nomCom : 'alive',
+        categorie : 'General'
+        
+    },async (dest,zk,commandeOptions) => {
 
-  if (['alive', 'uptime', 'runtime'].includes(cmd)) {
-    const width = 800;
-    const height = 500;
-    const image = new Jimp(width, height, 'black');
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
-    const textMetrics = Jimp.measureText(font, timeString);
-    const textHeight = Jimp.measureTextHeight(font, timeString, width);
-    const x = (width / 2) - (textMetrics / 2);
-    const y = (height / 2) - (textHeight / 2);
-    image.print(font, x, y, timeString, width, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE);
-    const buffer = await image.getBufferAsync(Jimp.MIME_PNG);
+ const {ms , arg, repondre,superUser} = commandeOptions;
+
+ const data = await getDataFromAlive();
+
+ if (!arg || !arg[0] || arg.join('') === '') {
+
+    if(data) {
+       
+        const {message , lien} = data;
+
+
+        var mode = "public";
+        if ((s.MODE).toLocaleLowerCase() != "yes") {
+            mode = "private";
+        }
+      
     
-    const uptimeMessage = `*🤖 KHAN-MD Status Overview*
-_________________________________________
+     
+    moment.tz.setDefault('Etc/GMT');
 
-*📆 ${days} Day(s)*
-*🕰️ ${hours} Hour(s)*
-*⏳ ${minutes} Minute(s)*
-*⏲️ ${seconds} Second(s)*
-_________________________________________
-`;
+// Créer une date et une heure en GMT
+const temps = moment().format('HH:mm:ss');
+const date = moment().format('DD/MM/YYYY');
+
+    const alivemsg = `
+*Owner* : ${s.OWNER_NAME}
+*Mode* : ${mode}
+*Date* : ${date}
+*Hours(GMT)* : ${temps}
+
+ ${message}
+ 
+ 
+ *BMW-MD-WABOT*`
+
+ if (lien.match(/\.(mp4|gif)$/i)) {
+    try {
+        zk.sendMessage(dest, { video: { url: lien }, caption: alivemsg }, { quoted: ms });
+    }
+    catch (e) {
+        console.log("🥵🥵 Menu erreur " + e);
+        repondre("🥵🥵 Menu erreur " + e);
+    }
+} 
+// Checking for .jpeg or .png
+else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
+    try {
+        zk.sendMessage(dest, { image: { url: lien }, caption: alivemsg }, { quoted: ms });
+    }
+    catch (e) {
+        console.log("🥵🥵 Menu erreur " + e);
+        repondre("🥵🥵 Menu erreur " + e);
+    }
+} 
+else {
     
-    const buttons = [
-      {
-        "name": "quick_reply",
-        "buttonParamsJson": JSON.stringify({
-          display_text: "MENU",
-          id: `${prefix}menu`
-        })
-      },
-      {
-        "name": "quick_reply",
-        "buttonParamsJson": JSON.stringify({
-          display_text: "PING",
-          id: `${prefix}ping`
-        })
-      }
-    ];
+    repondre(alivemsg);
+    
+}
 
-    const msg = generateWAMessageFromContent(m.from, {
-      viewOnceMessage: {
-        message: {
-          messageContextInfo: {
-            deviceListMetadata: {},
-            deviceListMetadataVersion: 2
-          },
-          interactiveMessage: proto.Message.InteractiveMessage.create({
-            body: proto.Message.InteractiveMessage.Body.create({
-              text: uptimeMessage
-            }),
-            footer: proto.Message.InteractiveMessage.Footer.create({
-              text: "© ᴘᴏᴡᴇʀᴅ ʙʏ ᴋʜᴀɴ-ᴍᴅ"
-            }),
-            header: proto.Message.InteractiveMessage.Header.create({
-              ...(await prepareWAMessageMedia({ image: buffer }, { upload: Matrix.waUploadToServer })),
-              title: ``,
-              gifPlayback: false,
-              subtitle: "",
-              hasMediaAttachment: false
-            }),
-            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-              buttons
-            }),
-            contextInfo: {
-              quotedMessage: m.message,
-              forwardingScore: 999,
-              isForwarded: true,
-              forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363316555500484@newsletter',
-                newsletterName: "KHAN-MD",
-                serverMessageId: 143
-              }
-            }
-          }),
-        },
-      },
-    }, {});
+    } else {
+        if(!superUser) { repondre("there is no alive for this bot") ; return};
 
-    await Matrix.relayMessage(msg.key.remoteJid, msg.message, {
-      messageId: msg.key.id
+      await   repondre("You have not yet saved your alive, to do this;  enter after alive your message and your image or video link in this context: .alive message;lien");
+         repondre("don't do fake thinks :)")
+     }
+ } else {
+
+    if(!superUser) { repondre ("Only the owner can  modify the alive") ; return};
+
+  
+    const texte = arg.join(' ').split(';')[0];
+    const tlien = arg.join(' ').split(';')[1]; 
+
+
+    
+await addOrUpdateDataInAlive(texte , tlien)
+
+repondre(' Holla🥴, *BELTAH-MD BOT* is alive just like you gee. ')
+
+}
     });
-  }
-};
-
-export default alive;
