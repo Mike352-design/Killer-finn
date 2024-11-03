@@ -1,8 +1,8 @@
 {
-  "name": "WhatsApp Bot KHAN-MD",
-  "description": "I am KHAN-MD WhatsApp MultiDevice Bot built in NodeJs to enhance the experience.",
+  "name": "WhatsApp Bot QUEEN GRACIE",
+  "description": "I am QUEEN GRACIE-MD WhatsApp MultiDevice Bot built in NodeJs to enhance the experience.",
   "logo": "https://raw.githubusercontent.com/JawadTechX/JawadTechX/main/JawadTechX.png",
-  "keywords": ["KHAN-MD"],
+  "keywords": ["QUEEN GRACIE-MD"],
   "repository": "https://github.com/JawadTechX/KHAN-MD",
   "stack": "container",
   "env": { 
@@ -29,12 +29,12 @@
     "STATUS_READ_MSG": {
       "description": "set your status reply message",
       "required": false,
-      "value": "*Status Seen By KHAN-MD 👻🤍*"
+      "value": "*Status Seen By ALVIN/GRACIE 😂🤙☢️*"
     },
     "OWNER_NAME": {
       "description": "set your status reply message",
       "required": false,
-      "value": "KHAN-MD"
+      "value": "MISTAH X"
     },
     "OWNER_NUMBER": {
       "description": "set your status reply message",
@@ -64,7 +64,7 @@
     "ALWAYS_ONLINE": {
       "description": "make it true if you want bot to show always online",
       "required": false,
-      "value": "false"
+      "value": "true"
     },
     "AUTO_BLOCK": {
       "description": "make it true if you want bot to auto block only 212 numbers",
@@ -79,7 +79,7 @@
     "PREFIX": {
       "description": "Your Bot Prefix default (.)",
       "required": false,
-      "value": "."
+      "value": "@"
     }
     },
     "buildpacks": [
